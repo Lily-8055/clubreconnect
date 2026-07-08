@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: main(~{::section})}">
+<body>
+<section>
+<div class="page">
+    <div class="wrap">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-header__title">Explore <span class="gradient-text">Clubs</span></h1>
+                <p class="page-header__sub">Find and join the communities that match your interests and connections.</p>
+            </div>
+            <a href="/clubs/create" class="btn btn--primary">+ Create New Club</a>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="card mb-8" style="overflow: visible;">
+            <div class="card__body">
+                <form th:action="@{/clubs}" method="get">
+                    <div class="field-row" style="grid-template-columns: 1fr 220px auto; align-items: end; gap: 16px;">
+                        <div class="field" style="margin-bottom: 0;">
+                            <label class="field__label">Search by Name</label>
+                            <input type="text" name="query" class="field__input" placeholder="Search clubs..." th:value="${query}">
+                        </div>
+                        <div class="field" style="margin-bottom: 0;">
+                            <label class="field__label">Category</label>
+                            <select name="category" class="field__input">
+                                <option value="All">All Categories</option>
+                                <option value="Academic" th:selected="${category == 'Academic'}">Academic</option>
+                                <option value="Cultural"  th:selected="${category == 'Cultural'}">Cultural</option>
+                                <option value="Sports"    th:selected="${category == 'Sports'}">Sports</option>
+                                <option value="Alumni"    th:selected="${category == 'Alumni'}">Alumni</option>
+                                <option value="Other"     th:selected="${category == 'Other'}">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn--primary" style="height: 48px; border-radius: 12px;">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Clubs Grid -->
+        <div class="grid g-3col g-gap-6" th:if="${not #lists.isEmpty(clubs)}">
+            <div th:each="club : ${clubs}" class="card card--hover" style="display:flex; flex-direction:column;">
+                <div class="card__body" style="flex: 1; display:flex; flex-direction:column; gap: 10px;">
+                    <span class="badge badge--primary" th:text="${club.category}">Category</span>
+                    <h2 class="t-h5" th:text="${club.name}">Club Name</h2>
+                    <p class="t-sm t-muted" style="flex: 1; line-height: 1.65;" th:text="${#strings.abbreviate(club.description, 100)}">Description</p>
+                </div>
+                <div class="card__footer flex ai-center jc-between">
+                    <span class="t-xs t-muted fw-600">
+                        &#128101; <span th:text="${club.memberships.size()}">0</span> members
+                    </span>
+                    <a th:href="@{/clubs/{id}(id=${club.id})}" class="btn btn--primary btn--sm">View Club &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="card" th:if="${#lists.isEmpty(clubs)}">
+            <div class="empty">
+                <span class="empty__icon">&#128269;</span>
+                <div class="empty__title">No clubs found</div>
+                <p class="empty__sub">Try adjusting your search or browse all available communities.</p>
+                <a href="/clubs" class="btn btn--primary">Reset Search</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+</section>
+</body>
+</html>

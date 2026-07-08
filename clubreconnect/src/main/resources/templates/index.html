@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: main(~{::section})}">
+<body>
+<section>
+
+<!-- ── HERO ─────────────────────────────────── -->
+<div style="padding: 96px 0 80px; background: linear-gradient(160deg, #f8f9ff 0%, #f0f1ff 100%); border-bottom: 1px solid #e4e6f0;">
+    <div class="wrap">
+        <div class="grid g-2col g-gap-8" style="align-items: center;">
+            <div>
+                <div class="section-header__eyebrow" style="display: inline-flex; margin-bottom: 20px;">&#10024; Built for Community</div>
+                <h1 class="t-h1 mb-4">
+                    Reconnect with<br>
+                    <span class="gradient-text">Your Community.</span>
+                </h1>
+                <p class="t-sm t-muted mb-8" style="max-width: 440px; line-height: 1.8; font-size: 1rem;">
+                    The premier platform for club reunions, professional networking, and finding your tribe.
+                    Join thousands of active alumni and students today.
+                </p>
+                <div class="flex gap-4 wrap-flex mb-8">
+                    <a href="/register" class="btn btn--primary btn--xl">Start Your Journey</a>
+                    <a href="/login" class="btn btn--secondary btn--xl">Member Login</a>
+                </div>
+                <!-- Stats Row -->
+                <div class="stat-row" style="padding-top: 32px; border-top: 1.5px solid #e4e6f0;">
+                    <div class="mini-stat">
+                        <div class="mini-stat__val">500+</div>
+                        <div class="mini-stat__label">Active Members</div>
+                    </div>
+                    <div class="" style="width: 1px; background: #e4e6f0;"></div>
+                    <div class="mini-stat">
+                        <div class="mini-stat__val">50+</div>
+                        <div class="mini-stat__label">Communities</div>
+                    </div>
+                    <div class="" style="width: 1px; background: #e4e6f0;"></div>
+                    <div class="mini-stat">
+                        <div class="mini-stat__val">200+</div>
+                        <div class="mini-stat__label">Events Hosted</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floating Card Preview -->
+            <div class="flex jc-end">
+                <div class="card card--glass" style="max-width: 340px; width: 100%; animation: float 4s ease-in-out infinite;">
+                    <div class="card__body">
+                        <div class="flex ai-center gap-3 mb-5">
+                            <div class="avatar avatar--md avatar--gradient">&#11088;</div>
+                            <div>
+                                <div class="fw-700 t-sm">Upcoming Event</div>
+                                <div class="t-xs t-muted">Confirmed · 28 attending</div>
+                            </div>
+                        </div>
+                        <div style="background: #f1f5ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;">
+                            <div class="fw-700 mb-2">Tech Reunion 2026</div>
+                            <div class="t-xs t-muted">&#128197; April 5, 2026 &nbsp;&nbsp; &#128205; Auditorium A</div>
+                        </div>
+                        <div class="flex ai-center jc-between">
+                            <div class="flex" style="gap: -6px;">
+                                <div class="avatar avatar--sm avatar--gradient" style="z-index: 3;">A</div>
+                                <div class="avatar avatar--sm avatar--secondary" style="margin-left: -8px; z-index: 2;">B</div>
+                                <div class="avatar avatar--sm" style="margin-left: -8px; z-index: 1; background: #e2e8f0; color: #64748b;">+24</div>
+                            </div>
+                            <a href="/clubs" class="btn btn--primary btn--sm">Explore &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── CLUBS SECTION ─────────────────────────────────── -->
+<div style="padding: 80px 0; background: #fff; border-bottom: 1px solid #e4e6f0;">
+    <div class="wrap">
+        <div class="section-header">
+            <div class="section-header__eyebrow">Communities</div>
+            <h2 class="section-header__title">Explore Active <span class="gradient-text">Clubs</span></h2>
+            <p class="section-header__sub">Discover communities created by students and alumni across all areas of interest.</p>
+        </div>
+        <div class="grid g-3col g-gap-6" th:if="${featuredClubs != null and not #lists.isEmpty(featuredClubs)}">
+            <div th:each="club : ${featuredClubs}" class="card card--hover" style="display: flex; flex-direction: column;">
+                <div class="card__body" style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+                    <span class="badge badge--primary" th:text="${club.category}">Category</span>
+                    <h3 class="t-h5" th:text="${club.name}">Club Name</h3>
+                    <p class="t-sm t-muted" style="flex: 1;" th:text="${#strings.abbreviate(club.description, 95)}">Description</p>
+                </div>
+                <div class="card__footer flex ai-center jc-between">
+                    <span class="t-xs t-muted fw-600">&#128101; <span th:text="${club.memberships.size()}">0</span> members</span>
+                    <a th:href="@{/clubs/{id}(id=${club.id})}" class="btn btn--primary btn--sm">View Club</a>
+                </div>
+            </div>
+        </div>
+        <div class="t-center mt-10">
+            <a href="/clubs" class="btn btn--secondary btn--lg">Browse All Clubs &rarr;</a>
+        </div>
+    </div>
+</div>
+
+<!-- ── FEATURES ─────────────────────────────────── -->
+<div style="padding: 80px 0;">
+    <div class="wrap">
+        <div class="section-header">
+            <div class="section-header__eyebrow">Platform Features</div>
+            <h2 class="section-header__title">Everything you need to <span class="gradient-text">reconnect</span></h2>
+        </div>
+        <div class="grid g-3col g-gap-6">
+            <div class="card card--flat" style="padding: 32px;">
+                <div class="avatar avatar--md avatar--gradient mb-5">&#127968;</div>
+                <h3 class="t-h5 mb-3">Club Hub</h3>
+                <p class="t-sm t-muted">Create or join alumni clubs organized by graduation year, department, or common interest.</p>
+            </div>
+            <div class="card card--flat" style="padding: 32px;">
+                <div class="avatar avatar--md avatar--secondary mb-5">&#128197;</div>
+                <h3 class="t-h5 mb-3">Event Planning</h3>
+                <p class="t-sm t-muted">Schedule and discover reunions, workshops, and networking events in your community.</p>
+            </div>
+            <div class="card card--flat" style="padding: 32px;">
+                <div class="avatar avatar--md avatar--accent mb-5">&#128172;</div>
+                <h3 class="t-h5 mb-3">Discussion Boards</h3>
+                <p class="t-sm t-muted">Stay engaged with club-specific message boards, announcements, and collaborative discussions.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+</style>
+</section>
+</body>
+</html>

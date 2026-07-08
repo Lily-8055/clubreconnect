@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: main(~{::section})}">
+<body>
+<section>
+<div class="page">
+    <div class="wrap">
+        <div class="grid g-3-1 g-gap-7 g-start">
+
+            <!-- ── MAIN COLUMN ──────────────────────────── -->
+            <div class="flex flex-col gap-6">
+
+                <!-- Club Hero Card -->
+                <div class="card card--gradient">
+                    <div class="card__body" style="padding: 36px; position: relative; z-index: 1;">
+                        <span class="badge" style="background: rgba(255,255,255,0.2); color: white; margin-bottom: 20px;" th:text="${club.category}">Category</span>
+                        <h1 style="font-size: 2rem; color: white; font-weight: 800; margin-bottom: 12px;" th:text="${club.name}">Club Name</h1>
+                        <p style="color: rgba(255,255,255,0.80); font-size: 0.92rem; line-height: 1.75; margin-bottom: 28px;" th:text="${club.description}">Description</p>
+                        <div class="flex ai-center jc-between" style="padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+                            <div class="flex ai-center gap-3">
+                                <div class="avatar avatar--sm" style="background: rgba(255,255,255,0.2); color: white; font-weight: 700;">
+                                    <span th:text="${#strings.substring(club.creator.fullName, 0, 1)}">A</span>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">Created by</div>
+                                    <div style="font-weight: 700; color: white; font-size: 0.88rem;" th:text="${club.creator.fullName}">Admin</div>
+                                </div>
+                            </div>
+                            <a th:if="${session.user != null and session.user.id == club.creator.id}"
+                               th:href="@{/clubs/{id}/manage(id=${club.id})}"
+                               style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 9px 20px; border-radius: 50px; font-weight: 600; font-size: 0.82rem; text-decoration: none; transition: all 0.2s;"
+                               onmouseover="this.style.background='rgba(255,255,255,0.28)'"
+                               onmouseout="this.style.background='rgba(255,255,255,0.18)'">
+                                &#9881; Admin Panel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message Board -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="card__title">&#128172; Discussion Board</span>
+                        <span class="badge badge--neutral t-xs" th:text="${#lists.size(messages)} + ' messages'">0 messages</span>
+                    </div>
+                    <div class="card__body">
+                        <!-- Messages -->
+                        <div class="msg-list overflow-auto max-h-400 mb-6" th:if="${not #lists.isEmpty(messages)}">
+                            <div th:each="msg : ${messages}" class="msg">
+                                <div class="avatar avatar--sm avatar--primary shrink-0">
+                                    <span th:text="${#strings.substring(msg.sender.fullName, 0, 1)}">U</span>
+                                </div>
+                                <div class="msg__bubble">
+                                    <div class="msg__meta">
+                                        <span class="msg__name" th:text="${msg.sender.fullName}">Sender</span>
+                                        <span class="msg__time" th:text="${#temporals.format(msg.timestamp, 'MMM dd, HH:mm')}">Time</span>
+                                    </div>
+                                    <div class="msg__text" th:text="${msg.content}">Message content</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="empty" th:if="${#lists.isEmpty(messages)}" style="padding: 32px 0;">
+                            <span class="empty__icon">&#128172;</span>
+                            <div class="empty__title">No messages yet.</div>
+                            <p class="empty__sub">Start the conversation!</p>
+                        </div>
+
+                        <!-- Message Input -->
+                        <form th:if="${session.user != null}" th:action="@{/clubs/{id}/messages(id=${club.id})}" method="post">
+                            <div style="display: flex; gap: 10px; align-items: center; background: #f6f7fc; border: 1.5px solid #e4e6f0; border-radius: 50px; padding: 6px 6px 6px 20px;">
+                                <input type="text" name="content"
+                                       style="flex: 1; border: none; background: transparent; outline: none; font-size: 0.9rem; color: #0f172a; font-family: inherit;"
+                                       placeholder="Share a message with the community..." required>
+                                <button type="submit" class="btn btn--primary btn--sm">Send &#10148;</button>
+                            </div>
+                        </form>
+                        <div class="alert alert--info mt-4" th:if="${session.user == null}">
+                            &#128274; <a href="/login" class="fw-600">Sign in</a> to post messages.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SIDEBAR ───────────────────────────────── -->
+            <aside class="flex flex-col gap-5">
+
+                <!-- Join Card -->
+                <div class="card">
+                    <div class="card__body">
+                        <h3 class="t-h5 mb-3">Join Community</h3>
+                        <p class="t-xs t-muted mb-5" style="line-height: 1.7;">Become a member to attend events and participate in discussions.</p>
+                        <form th:action="@{/clubs/{id}/join(id=${club.id})}" method="post">
+                            <input type="hidden" name="status" value="PENDING">
+                            <button type="submit" class="btn btn--primary btn--full">&#128101; Request Membership</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Events Sidebar -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="card__title t-sm">&#128197; Events</span>
+                        <button th:if="${session.user != null}"
+                                class="btn btn--ghost btn--xs"
+                                onclick="document.getElementById('eventModal').style.display='flex'">+ Add</button>
+                    </div>
+                    <div class="card__body">
+                        <div class="event-list" th:if="${not #lists.isEmpty(events)}">
+                            <div th:each="event : ${events}" class="event-item">
+                                <div class="event-item__icon" style="width: 36px; height: 36px;">&#128197;</div>
+                                <div>
+                                    <div class="event-item__title" th:text="${event.title}">Event</div>
+                                    <div class="event-item__meta" th:text="${event.eventDate}">Date</div>
+                                    <div class="event-item__meta" th:text="${event.location}">Location</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="empty" th:if="${#lists.isEmpty(events)}" style="padding: 24px 0;">
+                            <div class="empty__title">No events yet.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club Stats -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="label mb-4">Club Stats</div>
+                        <div class="flex gap-6">
+                            <div>
+                                <div class="t-h3 t-primary" th:text="${club.memberships.size()}">0</div>
+                                <div class="t-xs t-muted">Members</div>
+                            </div>
+                            <div>
+                                <div class="t-h3 t-primary" th:text="${club.events.size()}">0</div>
+                                <div class="t-xs t-muted">Events</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<!-- ── EVENT MODAL ──────────────────────────── -->
+<div id="eventModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding: 20px;">
+    <div class="card" style="width: 100%; max-width: 480px;">
+        <div class="card__header">
+            <span class="card__title">&#128197; Create New Event</span>
+            <button onclick="document.getElementById('eventModal').style.display='none'"
+                    style="background:none; border:none; font-size: 1.4rem; cursor:pointer; color: #94a3b8; line-height: 1;">&times;</button>
+        </div>
+        <div class="card__body">
+            <form th:action="@{/clubs/{id}/events(id=${club.id})}" method="post">
+                <div class="field">
+                    <label class="field__label">Event Title</label>
+                    <input type="text" name="title" class="field__input" placeholder="e.g. Annual Tech Meetup" required>
+                </div>
+                <div class="field">
+                    <label class="field__label">Description</label>
+                    <textarea name="description" class="field__input" rows="3" placeholder="Describe the event..."></textarea>
+                </div>
+                <div class="field-row field-row--2">
+                    <div class="field">
+                        <label class="field__label">Date &amp; Time</label>
+                        <input type="datetime-local" name="date" class="field__input" required>
+                    </div>
+                    <div class="field">
+                        <label class="field__label">Location</label>
+                        <input type="text" name="location" class="field__input" placeholder="Auditorium / Zoom">
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-4">
+                    <button type="submit" class="btn btn--primary flex-1">Create Event</button>
+                    <button type="button" class="btn btn--ghost" onclick="document.getElementById('eventModal').style.display='none'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</section>
+</body>
+</html>

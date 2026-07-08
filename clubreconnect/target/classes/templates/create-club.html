@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: main(~{::section})}">
+<body>
+<section>
+<div class="page">
+    <div class="wrap-narrow">
+        <div class="card card--glass">
+            <div class="card__body" style="padding: 48px;">
+
+                <!-- Header -->
+                <div class="flex ai-start gap-5 mb-8">
+                    <div class="avatar avatar--lg avatar--accent shrink-0">&#127968;</div>
+                    <div>
+                        <h1 class="t-h2 mb-1">Found a <span class="gradient-text">New Club</span></h1>
+                        <p class="t-sm t-muted">Define your community and invite others to join.</p>
+                    </div>
+                </div>
+
+                <form th:action="@{/clubs/create}" th:object="${club}" method="post">
+
+                    <div class="field">
+                        <label class="field__label">Club Name</label>
+                        <input type="text" th:field="*{name}" class="field__input" placeholder="e.g. Robotix Society" required>
+                    </div>
+
+                    <div class="field">
+                        <label class="field__label">Category</label>
+                        <select class="field__input" th:field="*{category}">
+                            <option value="Academic">Academic</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Alumni">Alumni</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="field mb-8">
+                        <label class="field__label">Description</label>
+                        <textarea th:field="*{description}" class="field__input" rows="4" placeholder="What makes your club special? Who should join?"></textarea>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="btn btn--primary btn--lg flex-1">&#128640; Launch Club</button>
+                        <a href="/dashboard" class="btn btn--ghost btn--lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+</body>
+</html>

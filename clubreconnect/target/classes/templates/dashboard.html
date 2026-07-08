@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: main(~{::section})}">
+<body>
+<section>
+<div class="page">
+    <div class="wrap">
+
+        <!-- Page Header -->
+        <div class="flex ai-center jc-between mb-8">
+            <div>
+                <h1 class="t-h2">Your <span class="gradient-text">Dashboard</span></h1>
+                <p class="t-sm t-muted mt-2">Welcome back, <strong th:text="${user.fullName}">User</strong>!</p>
+            </div>
+            <a href="/clubs/create" class="btn btn--primary">+ Create Club</a>
+        </div>
+
+        <!-- Main Layout: Sidebar + Content -->
+        <div class="grid g-sidebar g-gap-7 g-start">
+
+            <!-- ── SIDEBAR ─────────────────────── -->
+            <aside class="flex flex-col gap-5">
+
+                <!-- Profile Card -->
+                <div class="card">
+                    <div class="card__body t-center">
+                        <div class="avatar avatar--xl avatar--gradient" style="margin: 0 auto 16px;">
+                            <span th:text="${#strings.substring(user.fullName, 0, 1)}">U</span>
+                        </div>
+                        <div class="fw-700 t-h5" th:text="${user.fullName}">Name</div>
+                        <div class="t-xs t-muted mt-2" th:text="${user.graduationYear != null ? 'Class of ' + user.graduationYear : 'Community Member'}">Class</div>
+                        <p class="t-xs t-muted" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #e4e6f0; font-style: italic; line-height: 1.7;"
+                           th:text="${user.bio ?: 'Building bridges, one club at a time.'}">Bio</p>
+                    </div>
+                </div>
+
+                <!-- Stat Card -->
+                <div class="stat-card">
+                    <div class="stat-card__num" th:text="${#lists.size(clubs)}">0</div>
+                    <div class="stat-card__label">Joined Communities</div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="t-xs fw-700" style="text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8;">Quick Links</span>
+                    </div>
+                    <div style="padding: 8px 12px;">
+                        <a href="/clubs" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: #334155; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; text-decoration: none;" onmouseover="this.style.background='#f1f5ff'; this.style.color='#5b5ef4';" onmouseout="this.style.background=''; this.style.color='#334155';">
+                            <span>&#127968;</span> Explore Clubs
+                        </a>
+                        <a href="/clubs/create" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: #334155; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; text-decoration: none;" onmouseover="this.style.background='#f1f5ff'; this.style.color='#5b5ef4';" onmouseout="this.style.background=''; this.style.color='#334155';">
+                            <span>+</span> Create a Club
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ── MAIN CONTENT ───────────────── -->
+            <div class="flex flex-col gap-6">
+
+                <!-- My Communities -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="card__title">&#127968; My Communities</span>
+                        <a href="/clubs" class="btn btn--ghost btn--sm">Explore More</a>
+                    </div>
+                    <div class="card__body">
+                        <div class="grid g-2col g-gap-4" th:if="${not #lists.isEmpty(clubs)}">
+                            <a th:each="club : ${clubs}"
+                               th:href="@{/clubs/{id}(id=${club.id})}"
+                               style="display: block; padding: 16px 20px; background: #f8f9ff; border: 1.5px solid #e4e6f0; border-radius: 14px; text-decoration: none; transition: all 0.2s;"
+                               onmouseover="this.style.borderColor='#5b5ef4'; this.style.background='#eef0ff';"
+                               onmouseout="this.style.borderColor='#e4e6f0'; this.style.background='#f8f9ff';">
+                                <span class="badge badge--primary" style="margin-bottom: 8px;" th:text="${club.category}">Cat</span>
+                                <div class="fw-700 t-sm" style="color: #0f172a;" th:text="${club.name}">Name</div>
+                            </a>
+                        </div>
+                        <div class="empty" th:if="${#lists.isEmpty(clubs)}" style="padding: 40px 0;">
+                            <span class="empty__icon">&#128101;</span>
+                            <div class="empty__title">No communities joined yet</div>
+                            <a href="/clubs" class="btn btn--primary btn--sm mt-4">Browse Clubs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="card__title">&#128197; Upcoming Events</span>
+                    </div>
+                    <div class="card__body">
+                        <div class="event-list" th:if="${not #lists.isEmpty(events)}">
+                            <div th:each="event : ${events}" class="event-item">
+                                <div class="event-item__icon">&#128197;</div>
+                                <div class="flex-1">
+                                    <div class="event-item__title" th:text="${event.title}">Event</div>
+                                    <div class="event-item__meta">
+                                        <span th:text="${event.eventDate}">Date</span>
+                                        &nbsp;&#183;&nbsp;
+                                        <span th:text="${event.location}">Location</span>
+                                    </div>
+                                </div>
+                                <span class="badge badge--neutral" th:text="${event.club.name}">Club</span>
+                            </div>
+                        </div>
+                        <div class="empty" th:if="${#lists.isEmpty(events)}" style="padding: 32px 0;">
+                            <div class="empty__title">No upcoming events.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+</body>
+</html>

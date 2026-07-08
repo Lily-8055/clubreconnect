@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: main(~{::section})}">
+<body>
+<section>
+<div class="page">
+    <div class="wrap-narrow">
+        <div class="card card--glass">
+            <div class="card__body" style="padding: 48px;">
+
+                <!-- Header -->
+                <div class="t-center mb-8">
+                    <div class="avatar avatar--lg avatar--secondary" style="margin: 0 auto 20px;">&#128100;</div>
+                    <h1 class="t-h2 mb-2">Create <span class="gradient-text">Account</span></h1>
+                    <p class="t-sm t-muted">Join the platform and reconnect with your community.</p>
+                </div>
+
+                <!-- Form -->
+                <form th:action="@{/register}" th:object="${user}" method="post">
+
+                    <div class="field">
+                        <label class="field__label">Full Name</label>
+                        <input type="text" th:field="*{fullName}" class="field__input" placeholder="e.g. Suraj Sharma" required>
+                    </div>
+
+                    <div class="field-row field-row--2-1">
+                        <div class="field">
+                            <label class="field__label">Email Address</label>
+                            <input type="email" th:field="*{email}" class="field__input" placeholder="name@example.com" required>
+                        </div>
+                        <div class="field">
+                            <label class="field__label">Grad Year</label>
+                            <input type="number" th:field="*{graduationYear}" class="field__input" placeholder="2024">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="field__label">Role</label>
+                        <select class="field__input" th:field="*{role}">
+                            <option value="ROLE_USER">Student / Member</option>
+                            <option value="ROLE_ALUMNI">Alumni</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label class="field__label">Password</label>
+                        <input type="password" th:field="*{password}" class="field__input" placeholder="Create a strong password" required>
+                    </div>
+
+                    <div class="field mb-8">
+                        <label class="field__label">Short Bio <span class="t-subtle">(optional)</span></label>
+                        <textarea th:field="*{bio}" class="field__input" rows="2" placeholder="Tell the community about yourself..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--lg btn--full">Create Account &rarr;</button>
+                </form>
+
+                <hr class="divider">
+
+                <p class="t-sm t-muted t-center">
+                    Already a member? <a href="/login" class="fw-600">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+</body>
+</html>

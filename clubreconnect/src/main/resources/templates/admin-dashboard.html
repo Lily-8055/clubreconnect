@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: main(~{::section})}">
+<body>
+<section>
+<div class="page">
+    <div class="wrap">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-header__title">Management Hub</h1>
+                <p class="page-header__sub">
+                    Managing <strong th:text="${club.name}">Club Name</strong>
+                    &nbsp;&bull;&nbsp;
+                    <span class="badge badge--primary" th:text="${club.category}">Category</span>
+                </p>
+            </div>
+            <a th:href="@{/clubs/{id}(id=${club.id})}" class="btn btn--ghost">&larr; Exit to Club Page</a>
+        </div>
+
+        <!-- Layout -->
+        <div class="grid g-3-1 g-gap-7 g-start">
+
+            <!-- ── MAIN COLUMN ─────────────────── -->
+            <div class="flex flex-col gap-6">
+
+                <!-- Membership Requests -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="card__title">&#9203; Pending Join Requests</span>
+                        <span class="badge badge--warning" th:text="${#lists.size(pendingMembers)} + ' pending'">0 pending</span>
+                    </div>
+                    <div class="table-wrap" style="border: none; border-radius: 0;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th style="text-align: center;">Grad Year</th>
+                                    <th style="text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="m : ${pendingMembers}">
+                                    <td>
+                                        <div class="flex ai-center gap-3">
+                                            <div class="avatar avatar--sm avatar--primary">
+                                                <span th:text="${#strings.substring(m.user.fullName, 0, 1)}">U</span>
+                                            </div>
+                                            <div>
+                                                <div class="fw-600 t-sm" th:text="${m.user.fullName}">Name</div>
+                                                <div class="t-xs t-muted" th:text="${m.user.email}">email</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span class="t-sm fw-500" th:text="${m.user.graduationYear ?: 'N/A'}">2024</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex gap-3 jc-end">
+                                            <form th:action="@{/clubs/membership/{mid}/update(mid=${m.id})}" method="post" style="margin:0;">
+                                                <input type="hidden" name="status" value="ACTIVE">
+                                                <input type="hidden" name="clubId" th:value="${club.id}">
+                                                <button type="submit" class="btn btn--success btn--xs">&#10003; Approve</button>
+                                            </form>
+                                            <form th:action="@{/clubs/membership/{mid}/update(mid=${m.id})}" method="post" style="margin:0;">
+                                                <input type="hidden" name="status" value="REJECTED">
+                                                <input type="hidden" name="clubId" th:value="${club.id}">
+                                                <button type="submit" class="btn btn--danger-outline btn--xs">&#10007; Reject</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(pendingMembers)}">
+                                    <td colspan="3">
+                                        <div class="empty" style="padding: 40px 0;">
+                                            <span class="empty__icon">&#128229;</span>
+                                            <div class="empty__title">All caught up!</div>
+                                            <p class="empty__sub">No pending join requests at the moment.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Club Information -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="card__title">&#128196; Club Information</span>
+                    </div>
+                    <div class="card__body">
+                        <div class="grid g-2col g-gap-5">
+                            <div>
+                                <div class="label">Club Name</div>
+                                <div style="background: #f6f7fc; border-radius: 10px; padding: 12px 16px; font-weight: 600;" th:text="${club.name}">Name</div>
+                            </div>
+                            <div>
+                                <div class="label">Category</div>
+                                <div style="background: #f6f7fc; border-radius: 10px; padding: 12px 16px; font-weight: 600;" th:text="${club.category}">Category</div>
+                            </div>
+                            <div style="grid-column: 1 / -1;">
+                                <div class="label">Description</div>
+                                <div style="background: #f6f7fc; border-radius: 10px; padding: 14px 16px; line-height: 1.7; color: #334155;" th:text="${club.description}">Description</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SIDEBAR ──────────────────────── -->
+            <aside class="flex flex-col gap-5">
+
+                <!-- Stats -->
+                <div class="stat-card">
+                    <div class="label" style="color: rgba(255,255,255,0.6); margin-bottom: 16px;">Club Insights</div>
+                    <div class="flex gap-6">
+                        <div>
+                            <div class="stat-card__num" th:text="${#lists.size(club.memberships)}">0</div>
+                            <div class="stat-card__label">Members</div>
+                        </div>
+                        <div>
+                            <div class="stat-card__num" th:text="${#lists.size(club.events)}">0</div>
+                            <div class="stat-card__label">Events</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="t-xs fw-700" style="text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8;">Quick Actions</span>
+                    </div>
+                    <div class="card__body flex flex-col gap-3">
+                        <a th:href="@{/clubs/{id}(id=${club.id})}" class="btn btn--secondary btn--sm btn--full">View Club Page</a>
+                        <a href="/dashboard" class="btn btn--ghost btn--sm btn--full">Back to Dashboard</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+</section>
+</body>
+</html>

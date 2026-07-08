@@ -1,0 +1,121 @@
+# ClubReconnect — Professional Community Platform
+
+**Project Documentation for Academic Submission**
+
+## 1. Project Overview
+**ClubReconnect** is a full-stack web application designed to bridge the gap between alumni and current students. The platform allows users to create and join affinity groups (Clubs), organize reunions and workshops (Events), and engage in meaningful discussions within their communities. 
+
+The application focuses on providing a premium, modern experience with a robust design system and a focus on community building.
+
+---
+
+## 2. Technical Stack
+The project is built using a modern, scalable architecture:
+
+- **Frontend**: 
+  - Standard HTML5 & Vanilla CSS3
+  - **Premium Design System**: Glassmorphism, 8pt Grid, Indigo/Rose Palette
+- **Backend**: 
+  - Java 17
+  - **Spring Boot 3.2.4** (Core Framework)
+  - **Spring Data JPA** (ORM Layer)
+  - **Thymeleaf** (Server-side Template Engine)
+- **Database**: 
+  - **MySQL 8.0** (Relational Data Storage)
+- **Utilities**: 
+  - **Lombok** (Boilerplate reduction)
+  - **Jakarta Validation** (Input sanitation)
+
+---
+
+## 3. Database Schema (ER Diagram)
+The following diagram illustrates the relational structure of the ClubReconnect database.
+
+```mermaid
+erDiagram
+    USER ||--o{ MEMBERSHIP : "has"
+    CLUB ||--o{ MEMBERSHIP : "has"
+    USER ||--o{ CLUB : "creates"
+    CLUB ||--o{ EVENT : "hosts"
+    USER ||--o{ MESSAGE : "sends"
+    CLUB ||--o{ MESSAGE : "contains"
+
+    USER {
+        Long id PK
+        String email "unique, nullable:false"
+        String password "nullable:false"
+        String fullName "nullable:false"
+        String role "ROLE_USER, ROLE_ADMIN"
+        Integer graduationYear
+        String bio "length:1000"
+    }
+
+    CLUB {
+        Long id PK
+        String name "nullable:false"
+        String description "length:1000"
+        String category "Academic, Sports, Arts, etc."
+        Long creator_id FK
+    }
+
+    MEMBERSHIP {
+        Long id PK
+        Long user_id FK
+        Long club_id FK
+        String status "ACTIVE, PENDING, ALUMNI"
+    }
+
+    EVENT {
+        Long id PK
+        String title "nullable:false"
+        String description "length:2000"
+        LocalDateTime eventDate "nullable:false"
+        String location
+        Long club_id FK
+    }
+
+    MESSAGE {
+        Long id PK
+        String content "length:2000"
+        LocalDateTime timestamp "nullable:false"
+        Long sender_id FK
+        Long club_id FK
+    }
+```
+
+---
+
+## 4. Core Features
+- **User Authentication**: Secure sign-up and sign-in with role-based access control.
+- **Personalized Dashboard**: A central hub for users to see their joined communities, upcoming events, and profile statistics.
+- **Community Management**: Tools to create, categorize, and join unique clubs.
+- **Event Coordination**: Club-specific event planning with schedules and location tracking.
+- **Discussion Board**: A unified messaging system for club members to stay connected.
+
+---
+
+## 5. UI Showcase
+Below are the conceptual designs for the premium ClubReconnect interface.
+
+````carousel
+![Landing Page Design](file:///c:/Users/suriy/.gemini/antigravity/brain/59edf197-7ad1-41fa-8ad6-edd42454a6ff/landing_page_mockup_1774964889960.png)
+<!-- slide -->
+![Dashboard Interface](file:///c:/Users/suriy/.gemini/antigravity/brain/59edf197-7ad1-41fa-8ad6-edd42454a6ff/dashboard_mockup_1774964906324.png)
+````
+
+---
+
+## 6. Execution Instructions
+To run the project locally, follow these steps:
+
+1. **Prerequisites**:
+   - Install **JDK 17**
+   - Install **MySQL Server 8.0**
+   - Configure a database named `clubreconnect_db`
+
+2. **Configuration**:
+   - Update [src/main/resources/application.properties](file:///c:/Users/suriy/.gemini/antigravity/scratch/clubreconnect/src/main/resources/application.properties) with your MySQL credentials.
+
+3. **Running the App**:
+   - Execute `./mvnw spring-boot:run` in the terminal.
+   - Access the platform at `http://localhost:8080`

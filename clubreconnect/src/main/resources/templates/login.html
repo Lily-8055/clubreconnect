@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: main(~{::section})}">
+<body>
+<section>
+<div class="page" style="min-height: 80vh; display: flex; align-items: center;">
+    <div class="wrap-xs w-full">
+        <div class="card card--glass">
+            <div class="card__body" style="padding: 48px;">
+
+                <!-- Header -->
+                <div class="t-center mb-8">
+                    <div class="avatar avatar--lg avatar--gradient" style="margin: 0 auto 20px;">&#128274;</div>
+                    <h1 class="t-h2 mb-2">Member <span class="gradient-text">Login</span></h1>
+                    <p class="t-sm t-muted">Welcome back. Sign in to your community.</p>
+                </div>
+
+                <!-- Error -->
+                <div class="alert alert--error" th:if="${error}">
+                    <span>&#9888;</span>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <!-- Form -->
+                <form th:action="@{/login}" method="post">
+                    <div class="field">
+                        <label class="field__label">Email Address</label>
+                        <input type="email" name="email" class="field__input" placeholder="name@example.com" required>
+                    </div>
+                    <div class="field mb-6">
+                        <label class="field__label">Password</label>
+                        <input type="password" name="password" class="field__input" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--lg btn--full">Sign In &rarr;</button>
+                </form>
+
+                <hr class="divider">
+
+                <p class="t-sm t-muted t-center">
+                    Don't have an account? <a href="/register" class="fw-600">Create Account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+</body>
+</html>
