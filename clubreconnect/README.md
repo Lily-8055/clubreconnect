@@ -1,4 +1,4 @@
-# ClubReconnect Project - Getting Started
+# ClubReconnect Project
 
 This is a complete Spring Boot application for the ClubReconnect platform.
 
